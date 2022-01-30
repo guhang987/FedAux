@@ -44,17 +44,13 @@ x_test = x_test.astype("float32") / 255
 x_train = np.expand_dims(x_train, -1)
 x_test = np.expand_dims(x_test, -1)
 
-# convert class vectors to binary class matrices
-# y_train = keras.utils.to_categorical(y_train, num_classes)
-# y_test = keras.utils.to_categorical(y_test, num_classes)
-
 
 
 
 data_handler = fed_learn.DataHandler(x_train, y_train, x_test, y_test, fed_learn.CifarProcessor(), args.debug)
 data_handler.assign_data_to_clients_plus(server.clients, args.data_sampling_technique)
 x_test, y_test = data_handler.preprocess(data_handler.x_test, data_handler.y_test)
-#记录上一轮准确率，发给设备
+
 test_acc = 0.1
 for epoch in range(args.global_epochs):
     print("Global Epoch {0} is starting".format(epoch))
@@ -62,11 +58,10 @@ for epoch in range(args.global_epochs):
     selected_clients = server.select_clients()
 
     fed_learn.print_selected_clients(selected_clients)
-    #加载全局模型并发给所有设备
+
     for client in selected_clients:
         print("Client {0} is starting the training".format(client.id))
-        # if epoch == 0:
-        #     server.load_model_weights("./model/a_model_3")
+
         server.send_model(client)
         hist = client.edge_train(server.get_client_train_param_dict())
         server.epoch_losses.append(hist.history["loss"][-1])
@@ -96,5 +91,4 @@ for epoch in range(args.global_epochs):
     server.save_model_weights(experiment.global_weight_path)
 
     print("_" * 30)
-    # if(epoch == 600):
-    #     break
+

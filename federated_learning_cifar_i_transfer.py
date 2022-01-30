@@ -41,7 +41,7 @@ server.create_clients()
 data_handler = fed_learn.DataHandler(x_train, y_train, x_test, y_test, fed_learn.CifarProcessor(), args.debug)
 data_handler.assign_data_to_clients(server.clients, args.data_sampling_technique)
 x_test, y_test = data_handler.preprocess(data_handler.x_test, data_handler.y_test)
-#记录上一轮准确率，发给设备
+
 test_acc = 0.1
 for epoch in range(args.global_epochs):
     print("Global Epoch {0} is starting".format(epoch))
@@ -49,12 +49,12 @@ for epoch in range(args.global_epochs):
     selected_clients = server.select_clients()
 
     fed_learn.print_selected_clients(selected_clients)
-    #加载全局模型并发给所有设备
+    #load auxiliary model weight
     for client in selected_clients:
         print("Client {0} is starting the training".format(client.id))
         if epoch == 0:
-            server.load_model_weights("./model/a_model")
-        # 这里会把聚合模型发送给所有设备，为什么不能在初始轮次发送？
+            server.load_model_weights("./model/aux_model")
+
         server.send_model(client)
         hist = client.edge_train(server.get_client_train_param_dict())
         server.epoch_losses.append(hist.history["loss"][-1])

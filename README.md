@@ -11,13 +11,20 @@ As an enabler of sixth-generation communication technology (6G), Federated Learn
 ## Usage
 1. train auxiliary model with the shared data
 `python train_share_model_cifar.py -n test`
+
 `python train_share_model_fmnist.py -n test`
+
 2. the implement of FedAux and baseline
 `python federated_learning_cifar_c_transfer.py -n test`
+
 `python federated_learning_cifar_i_transfer.py -n test`
+
 `python federated_learning_cifar_hybrid.py -n test` (Hybrid FL protocol)
 
 `python federated_learning_fmnist_c_transfer.py -n test`
+
 `python federated_learning_fmnist_i_transfer.py -n test`
+
 `python federated_learning_fmnist_hybrid.py -n test` (Hybrid FL protocol)
+
 3. some code should be fixed on FedAux/fed_learn/weight_summarizer.py to imply FedAvg
